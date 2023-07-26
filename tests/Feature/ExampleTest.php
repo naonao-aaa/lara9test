@@ -14,8 +14,13 @@ class ExampleTest extends TestCase
      */
     public function test_the_application_returns_a_successful_response()
     {
+        // 準備
+        
+
+        // 実行
         $response = $this->get('/');
 
+        // 検証
         $response->assertStatus(200);
     }
 
