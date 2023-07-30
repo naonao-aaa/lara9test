@@ -15,15 +15,17 @@ class PostListControllerTest extends TestCase
     /** @test */
     function TOPページで、ブログ一覧が表示される()
     {
-        $post1 = Post::factory()->create(['title' => 'ブログのタイトル1']);
-        $post2 = Post::factory()->create(['title' => 'ブログのタイトル2']);
+        $post1 = Post::factory()->hasComments(3)->create(['title' => 'ブログのタイトル1']);
+        $post2 = Post::factory()->hasComments(5)->create(['title' => 'ブログのタイトル2']);
 
         $this->get('/')
             ->assertOk()
             ->assertSee('ブログのタイトル1')
             ->assertSee('ブログのタイトル2')
             ->assertSee($post1->user->name)
-            ->assertSee($post2->user->name);
+            ->assertSee($post2->user->name)
+            ->assertSee('（3件のコメント）')
+            ->assertSee('（5件のコメント）');
     }
 
     /** @test */
