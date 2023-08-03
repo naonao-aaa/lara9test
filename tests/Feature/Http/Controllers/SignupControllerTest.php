@@ -22,20 +22,11 @@ class SignupControllerTest extends TestCase
     /** @test */
     function ユーザー登録できる()
     {
-        // データ検証
-        // DBに保存
-        // ログインされてからマイページにリダイレクト
-
         $validData = [
             'name' => '太郎',
             'email' => 'aaa@bbb.net',
             'password' => 'hogehoge',
         ];
-
-        // $validData = User::factory()->make()->toArray();
-        // $validData = User::factory()->validData();
-        
-        // dd($validData);
 
         $this->post('signup', $validData)
             ->assertOk();
@@ -45,8 +36,25 @@ class SignupControllerTest extends TestCase
         $this->assertDatabaseHas('users', $validData);
 
         $user = User::firstWhere($validData);
-        // $this->assertNotNull($user);
 
         $this->assertTrue(Hash::check('hogehoge', $user->password));
+    }
+
+    /** @test */
+    function 不正なデータではユーザー登録できない()
+    {
+        // $this->withoutExceptionHandling();
+        $url = 'signup';
+
+        // $this->post($url, [])
+        //     ->assertRedirect();
+
+        // $this->post($url, ['name' => ''])->assertSessionHasErrors(['name' => 'nameは必ず指定してください。']); // ->dumpSession()
+        
+        $this->post($url, ['name' => ''])->assertInvalid(['name' => '指定']);
+        $this->post($url, ['name' => str_repeat('あ', 21)])->assertInvalid(['name' => '20文字以下']);
+        $this->post($url, ['name' => str_repeat('あ', 20)])->assertvalid('name');
+
+
     }
 }
