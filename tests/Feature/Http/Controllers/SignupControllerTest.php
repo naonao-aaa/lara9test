@@ -43,23 +43,24 @@ class SignupControllerTest extends TestCase
     /** @test */
     function 不正なデータではユーザー登録できない()
     {
-        // $this->withoutExceptionHandling();
         $url = 'signup';
 
-        // $this->post($url, [])
-        //     ->assertRedirect();
+        User::factory()->create(['email' => 'aaa@bbb.net']);
 
-        // 注意点
-        // (1) カスタムメッセージを設定している時は、そちらが優先される
-        // (2) 入力エラーが出る前に言語ファイルを読もうとしている箇所がある時は、
-        //      そちらもtestingに対応させる必要あり
-        
         app()->setLocale('testing');
         
         $this->post($url, ['name' => ''])->assertInvalid(['name' => 'required']);
         $this->post($url, ['name' => str_repeat('あ', 21)])->assertInvalid(['name' => 'max']);
         $this->post($url, ['name' => str_repeat('あ', 20)])->assertvalid('name');
 
+        $this->post($url, ['email' => ''])->assertInvalid(['email' => 'required']);
+        $this->post($url, ['email' => 'aa@bb@cc'])->assertInvalid(['email' => 'email']);
+        $this->post($url, ['email' => 'aa@ああ.net'])->assertInvalid(['email' => 'email']);
+        $this->post($url, ['email' => 'aaa@bbb.net'])->assertInvalid(['email' => 'unique']);
+
+        $this->post($url, ['password' => ''])->assertInvalid(['password' => 'required']);
+        $this->post($url, ['password' => 'abcd123'])->assertInvalid(['password' => 'min']);
+        $this->post($url, ['password' => 'abcd1234'])->assertValid('password');
 
     }
 }
