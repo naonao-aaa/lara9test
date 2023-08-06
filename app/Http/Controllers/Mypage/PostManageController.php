@@ -44,6 +44,6 @@ class PostManageController extends Controller
 
         $data = old() ?? $post;
 
-        return view('mypage.posts.edit', compact('post', 'data'));
+        return view('mypage.posts.edit', compact('data'));
     }
 }
