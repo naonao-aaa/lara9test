@@ -66,4 +66,11 @@ class PostManageController extends Controller
         return redirect(route('mypage.posts.edit', $post))
             ->with('status', 'ブログを更新しました');
     }
+
+    public function destroy(Post $post)
+    {
+        $post->delete(); // 付随するCommentはDBの制約を使って削除する。（2023_07_30_112030_create_comments_table.php で制約を付ける）
+
+        return redirect('mypage/posts');
+    }
 }
