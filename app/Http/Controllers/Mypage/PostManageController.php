@@ -69,7 +69,11 @@ class PostManageController extends Controller
 
     public function destroy(Post $post)
     {
-        $post->delete(); // 付随するCommentはDBの制約を使って削除する。（2023_07_30_112030_create_comments_table.php で制約を付ける）
+        if (auth()->user()->isNot($post->user)) {
+            abort(403);
+        }
+
+        $post->delete(); // 今回は、このブログに紐づくコメントは、DBの制約を使って削除することにした。（2023_07_30_112030_create_comments_table.php で制約を付ける）
 
         return redirect('mypage/posts');
     }
